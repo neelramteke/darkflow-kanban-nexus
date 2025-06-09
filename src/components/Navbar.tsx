@@ -42,8 +42,7 @@ const Navbar = () => {
               variant="ghost"
               size="icon"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="text-gray-300 hover:text-white"
-              glowColors={['#6b7280', '#9ca3af', '#d1d5db', '#f3f4f6']}
+              className="text-white"
             >
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
@@ -52,8 +51,7 @@ const Navbar = () => {
               <Button 
                 onClick={() => navigate('/')}
                 variant="ghost" 
-                className="text-gray-300 hover:text-white"
-                glowColors={['#6b7280', '#9ca3af', '#d1d5db', '#f3f4f6']}
+                className="text-white"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Homepage
@@ -62,8 +60,7 @@ const Navbar = () => {
               <Link to="/settings">
                 <Button 
                   variant="ghost" 
-                  className="text-gray-300 hover:text-white"
-                  glowColors={['#6b7280', '#9ca3af', '#d1d5db', '#f3f4f6']}
+                  className="text-white"
                 >
                   <Settings className="h-4 w-4 mr-2" />
                   Settings
@@ -84,8 +81,7 @@ const Navbar = () => {
                     setMobileMenuOpen(false);
                   }}
                   variant="ghost" 
-                  className="text-gray-300 hover:text-white justify-start"
-                  glowColors={['#6b7280', '#9ca3af', '#d1d5db', '#f3f4f6']}
+                  className="text-white justify-start"
                 >
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back to Homepage
@@ -94,8 +90,7 @@ const Navbar = () => {
                 <Link to="/settings" onClick={() => setMobileMenuOpen(false)}>
                   <Button 
                     variant="ghost" 
-                    className="text-gray-300 hover:text-white justify-start w-full"
-                    glowColors={['#6b7280', '#9ca3af', '#d1d5db', '#f3f4f6']}
+                    className="text-white justify-start w-full"
                   >
                     <Settings className="h-4 w-4 mr-2" />
                     Settings
