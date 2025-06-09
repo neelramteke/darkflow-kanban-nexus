@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -44,6 +45,7 @@ const CardDetailsDialog = ({ card, isOpen, onClose, onUpdate }: CardDetailsDialo
   const [newComment, setNewComment] = useState('');
   const [assignedTo, setAssignedTo] = useState('');
   const [dueDate, setDueDate] = useState('');
+  const [completed, setCompleted] = useState(false);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
@@ -56,6 +58,7 @@ const CardDetailsDialog = ({ card, isOpen, onClose, onUpdate }: CardDetailsDialo
       setTags(card.tags || []);
       setAssignedTo(card.assigned_to || '');
       setDueDate(card.due_date ? new Date(card.due_date).toISOString().split('T')[0] : '');
+      setCompleted(card.completed || false);
       loadComments();
     }
   }, [card]);
@@ -126,6 +129,9 @@ const CardDetailsDialog = ({ card, isOpen, onClose, onUpdate }: CardDetailsDialo
           tags,
           assigned_to: assignedTo || null,
           due_date: dueDate ? new Date(dueDate).toISOString() : null,
+          completed,
+          completed_at: completed ? new Date().toISOString() : null,
+          updated_at: new Date().toISOString()
         })
         .eq('id', card.id);
 
@@ -204,6 +210,18 @@ const CardDetailsDialog = ({ card, isOpen, onClose, onUpdate }: CardDetailsDialo
         </DialogHeader>
 
         <div className="space-y-6">
+          {/* Completion Status */}
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              checked={completed}
+              onCheckedChange={(checked) => setCompleted(checked as boolean)}
+              className="border-gray-500 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
+            />
+            <label className="text-sm font-medium text-gray-300">
+              Mark as completed
+            </label>
+          </div>
+
           {/* Title */}
           <div>
             <label className="text-sm font-medium text-gray-300">Title</label>

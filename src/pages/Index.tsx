@@ -1,21 +1,16 @@
-
 import { useState, useEffect } from 'react';
 import { Tables } from '@/integrations/supabase/types';
 import { supabase } from '@/integrations/supabase/client';
 import Dashboard from '@/pages/Dashboard';
 import ProjectView from '@/pages/ProjectView';
 
-interface ProjectWithCover extends Tables<'projects'> {
-  cover_image?: string;
-}
-
 const Index = () => {
-  const [selectedProject, setSelectedProject] = useState<ProjectWithCover | null>(null);
-  const [projects, setProjects] = useState<ProjectWithCover[]>([]);
+  const [selectedProject, setSelectedProject] = useState<Tables<'projects'> | null>(null);
+  const [projects, setProjects] = useState<Tables<'projects'>[]>([]);
 
   const loadProjects = async () => {
     const { data } = await supabase.from('projects').select('*');
-    if (data) setProjects(data as ProjectWithCover[]);
+    if (data) setProjects(data);
   };
 
   const handleProjectUpdate = () => {

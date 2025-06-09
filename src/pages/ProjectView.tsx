@@ -1,4 +1,3 @@
-
 import KanbanBoard from '@/components/KanbanBoard';
 import ProjectNotes from '@/components/ProjectNotes';
 import ProjectLinks from '@/components/ProjectLinks';
@@ -14,12 +13,8 @@ import { Tables } from '@/integrations/supabase/types';
 import { useState } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-interface ProjectWithCover extends Tables<'projects'> {
-  cover_image?: string;
-}
-
 interface ProjectViewProps {
-  project: ProjectWithCover;
+  project: Tables<'projects'>;
   onBack: () => void;
   onUpdate?: () => void;
 }

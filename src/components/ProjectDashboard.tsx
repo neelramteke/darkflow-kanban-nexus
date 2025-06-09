@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tables } from '@/integrations/supabase/types';
@@ -22,27 +21,26 @@ const ProjectDashboard = ({ projectId, project }: ProjectDashboardProps) => {
     );
   }
 
-  const completedTasks = data.tasks.filter(task => task.status === 'completed').length;
+  // Calculate task statistics
+  const completedTasks = data.tasks.filter(task => task.completed).length;
   const upcomingTasks = data.tasks.filter(task => {
     if (!task.task_date) return false;
     const taskDate = new Date(task.task_date);
     const now = new Date();
     const weekFromNow = new Date();
     weekFromNow.setDate(now.getDate() + 7);
-    return taskDate >= now && taskDate <= weekFromNow;
+    return taskDate >= now && taskDate <= weekFromNow && !task.completed;
   }).length;
 
   const overdueTasks = data.tasks.filter(task => {
     if (!task.task_date) return false;
     const taskDate = new Date(task.task_date);
     const now = new Date();
-    return taskDate < now && task.status !== 'completed';
+    return taskDate < now && !task.completed;
   }).length;
 
-  const completedCards = data.cards.filter(card => {
-    const column = data.columns.find(col => col.id === card.column_id);
-    return column?.name.toLowerCase().includes('done') || column?.name.toLowerCase().includes('completed');
-  }).length;
+  // Calculate card statistics
+  const completedCards = data.cards.filter(card => card.completed).length;
 
   return (
     <div className="space-y-6">
@@ -149,13 +147,24 @@ const ProjectDashboard = ({ projectId, project }: ProjectDashboardProps) => {
             <div className="space-y-4">
               {data.tasks.slice(0, 3).map((task) => (
                 <div key={task.id} className="flex items-start gap-4">
-                  <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center">
+                  <div className={`h-8 w-8 rounded-full flex items-center justify-center ${
+                    task.completed ? 'bg-green-500' : 'bg-blue-500'
+                  }`}>
                     <Calendar size={16} className="text-white" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-white">Task "{task.title}"</p>
+                    <p className={`text-sm font-medium ${
+                      task.completed ? 'text-gray-400 line-through' : 'text-white'
+                    }`}>
+                      Task "{task.title}"
+                    </p>
                     <p className="text-xs text-gray-400">
                       {task.task_date ? new Date(task.task_date).toLocaleDateString() : 'No date'}
+                      {task.completed && task.completed_at && (
+                        <span className="text-green-400 ml-2">
+                          ✓ Completed {new Date(task.completed_at).toLocaleDateString()}
+                        </span>
+                      )}
                     </p>
                   </div>
                 </div>
@@ -163,13 +172,24 @@ const ProjectDashboard = ({ projectId, project }: ProjectDashboardProps) => {
               
               {data.cards.slice(0, 2).map((card) => (
                 <div key={card.id} className="flex items-start gap-4">
-                  <div className="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center">
+                  <div className={`h-8 w-8 rounded-full flex items-center justify-center ${
+                    card.completed ? 'bg-green-500' : 'bg-purple-500'
+                  }`}>
                     <ClipboardList size={16} className="text-white" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-white">Card "{card.title}"</p>
+                    <p className={`text-sm font-medium ${
+                      card.completed ? 'text-gray-400 line-through' : 'text-white'
+                    }`}>
+                      Card "{card.title}"
+                    </p>
                     <p className="text-xs text-gray-400">
                       {new Date(card.created_at).toLocaleDateString()}
+                      {card.completed && card.completed_at && (
+                        <span className="text-green-400 ml-2">
+                          ✓ Completed {new Date(card.completed_at).toLocaleDateString()}
+                        </span>
+                      )}
                     </p>
                   </div>
                 </div>
@@ -184,15 +204,51 @@ const ProjectDashboard = ({ projectId, project }: ProjectDashboardProps) => {
         
         <Card className="bg-gray-900 border-gray-800">
           <CardHeader>
-            <CardTitle className="text-white">Calendar Tasks</CardTitle>
+            <CardTitle className="text-white">Progress Summary</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2">
-              <p className="text-gray-400">{upcomingTasks} upcoming tasks this week</p>
-              <p className="text-gray-400">{data.tasks.length} total tasks</p>
-              {overdueTasks > 0 && (
-                <p className="text-red-400">{overdueTasks} overdue tasks</p>
-              )}
+            <div className="space-y-4">
+              <div>
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="text-gray-300">Tasks Progress</span>
+                  <span className="text-gray-300">
+                    {data.tasks.length > 0 ? Math.round((completedTasks / data.tasks.length) * 100) : 0}%
+                  </span>
+                </div>
+                <div className="w-full bg-gray-700 rounded-full h-2">
+                  <div 
+                    className="bg-green-500 h-2 rounded-full transition-all duration-300" 
+                    style={{ 
+                      width: `${data.tasks.length > 0 ? (completedTasks / data.tasks.length) * 100 : 0}%` 
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="text-gray-300">Cards Progress</span>
+                  <span className="text-gray-300">
+                    {data.cards.length > 0 ? Math.round((completedCards / data.cards.length) * 100) : 0}%
+                  </span>
+                </div>
+                <div className="w-full bg-gray-700 rounded-full h-2">
+                  <div 
+                    className="bg-purple-500 h-2 rounded-full transition-all duration-300" 
+                    style={{ 
+                      width: `${data.cards.length > 0 ? (completedCards / data.cards.length) * 100 : 0}%` 
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="pt-2 space-y-2">
+                <p className="text-gray-400 text-sm">{upcomingTasks} upcoming tasks this week</p>
+                <p className="text-gray-400 text-sm">{data.tasks.length} total tasks</p>
+                {overdueTasks > 0 && (
+                  <p className="text-red-400 text-sm">{overdueTasks} overdue tasks</p>
+                )}
+              </div>
             </div>
           </CardContent>
         </Card>

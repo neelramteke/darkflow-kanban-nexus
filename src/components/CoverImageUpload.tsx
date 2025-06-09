@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,12 +6,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Upload, X } from 'lucide-react';
 import { Tables } from '@/integrations/supabase/types';
 
-interface ProjectWithCover extends Tables<'projects'> {
-  cover_image?: string;
-}
-
 interface CoverImageUploadProps {
-  project: ProjectWithCover;
+  project: Tables<'projects'>;
   onUpdate: () => void;
 }
 
@@ -31,6 +26,20 @@ const CoverImageUpload = ({ project, onUpdate }: CoverImageUploadProps) => {
       const fileName = `${project.id}-${Date.now()}.${fileExt}`;
       
       console.log('Uploading to path:', fileName);
+
+      // Remove old cover image if it exists
+      if (project.cover_image) {
+        const oldFileName = project.cover_image.split('/').pop();
+        if (oldFileName) {
+          const { error: deleteError } = await supabase.storage
+            .from('project-covers')
+            .remove([oldFileName]);
+          
+          if (deleteError) {
+            console.warn('Could not delete old file:', deleteError);
+          }
+        }
+      }
 
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('project-covers')
@@ -58,7 +67,7 @@ const CoverImageUpload = ({ project, onUpdate }: CoverImageUploadProps) => {
         .update({ 
           cover_image: publicUrl,
           updated_at: new Date().toISOString()
-        } as any)
+        })
         .eq('id', project.id);
 
       if (updateError) {
@@ -107,7 +116,7 @@ const CoverImageUpload = ({ project, onUpdate }: CoverImageUploadProps) => {
         .update({ 
           cover_image: null,
           updated_at: new Date().toISOString()
-        } as any)
+        })
         .eq('id', project.id);
 
       if (error) throw error;
@@ -141,6 +150,7 @@ const CoverImageUpload = ({ project, onUpdate }: CoverImageUploadProps) => {
             variant="destructive"
             className="absolute top-2 right-2"
             onClick={removeCoverImage}
+            disabled={uploading}
           >
             <X className="h-4 w-4" />
           </Button>
@@ -151,7 +161,7 @@ const CoverImageUpload = ({ project, onUpdate }: CoverImageUploadProps) => {
           <div className="mt-2">
             <label htmlFor="cover-upload" className="cursor-pointer">
               <span className="text-sm text-gray-600 dark:text-gray-400">
-                Click to upload cover image (JPG, PNG, GIF)
+                Click to upload cover image (JPG, PNG, GIF, WebP)
               </span>
               <Input
                 id="cover-upload"
@@ -186,9 +196,50 @@ const CoverImageUpload = ({ project, onUpdate }: CoverImageUploadProps) => {
             variant="outline"
             disabled={uploading}
             onClick={() => document.getElementById('cover-upload')?.click()}
+            className="border-gray-600 text-gray-300"
           >
             {uploading ? 'Uploading...' : 'Upload Cover Image'}
           </Button>
+        </div>
+      )}
+
+      {project.cover_image && (
+        <div className="text-center">
+          <label htmlFor="cover-replace" className="cursor-pointer">
+            <Button
+              variant="outline"
+              disabled={uploading}
+              className="border-gray-600 text-gray-300"
+              asChild
+            >
+              <span>
+                <Upload className="h-4 w-4 mr-2" />
+                {uploading ? 'Uploading...' : 'Replace Cover Image'}
+              </span>
+            </Button>
+            <Input
+              id="cover-replace"
+              type="file"
+              accept="image/jpeg,image/png,image/gif,image/webp"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  // Check file size (max 5MB)
+                  if (file.size > 5 * 1024 * 1024) {
+                    toast({
+                      title: "Error",
+                      description: "File size must be less than 5MB",
+                      variant: "destructive",
+                    });
+                    return;
+                  }
+                  uploadCoverImage(file);
+                }
+              }}
+              disabled={uploading}
+            />
+          </label>
         </div>
       )}
     </div>
