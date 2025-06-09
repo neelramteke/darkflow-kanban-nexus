@@ -1,6 +1,8 @@
+
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
+import { GlowEffect } from "./glow-effect"
 
 import { cn } from "@/lib/utils"
 
@@ -34,11 +36,32 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
+  glowColors?: string[]
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, glowColors, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
+    
+    if (glowColors) {
+      return (
+        <div className="relative">
+          <GlowEffect
+            colors={glowColors}
+            mode="colorShift"
+            blur="soft"
+            duration={3}
+            scale={0.9}
+          />
+          <Comp
+            className={cn(buttonVariants({ variant, size, className }))}
+            ref={ref}
+            {...props}
+          />
+        </div>
+      )
+    }
+    
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
