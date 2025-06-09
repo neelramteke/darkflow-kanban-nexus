@@ -201,7 +201,7 @@ const TaskCalendar = ({
               backgroundColor: '#1e40af',
               color: 'white'
             }
-          }} className="rounded-md border border-gray-700 mx-[80px]" />
+          }} className="border border-gray-700 mx-[81px] rounded-lg" />
           </CardContent>
         </Card>
 
