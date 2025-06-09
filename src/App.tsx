@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { AuthProvider, useAuth } from '@/hooks/useAuth';
 import { Tables } from '@/integrations/supabase/types';
 import Auth from '@/pages/Auth';
+import Landing from '@/pages/Landing';
 import Dashboard from '@/pages/Dashboard';
 import ProjectView from '@/pages/ProjectView';
 import Settings from '@/pages/Settings';
@@ -14,6 +15,7 @@ import Navbar from '@/components/Navbar';
 function AppContent() {
   const { user, loading } = useAuth();
   const [selectedProject, setSelectedProject] = useState<Tables<'projects'> | null>(null);
+  const [showAuth, setShowAuth] = useState(false);
 
   if (loading) {
     return (
@@ -26,7 +28,11 @@ function AppContent() {
     );
   }
 
-  if (!user) {
+  if (!user && !showAuth) {
+    return <Landing onGetStarted={() => setShowAuth(true)} />;
+  }
+
+  if (!user && showAuth) {
     return <Auth />;
   }
 
