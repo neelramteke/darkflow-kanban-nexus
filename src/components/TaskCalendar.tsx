@@ -240,7 +240,7 @@ const TaskCalendar = ({ projectId }: TaskCalendarProps) => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold text-white">Task Calendar</h2>
         <Button 
           onClick={() => setShowCreateDialog(true)} 
@@ -251,11 +251,16 @@ const TaskCalendar = ({ projectId }: TaskCalendarProps) => {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Calendar */}
-        <Card className="bg-gray-900 border-gray-800">
-          <CardHeader>
-            <CardTitle className="text-white">Calendar</CardTitle>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Calendar - Takes more space on desktop */}
+        <Card className="bg-gray-900 border-gray-800 lg:col-span-1">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-white flex items-center justify-between">
+              <span>Calendar</span>
+              <span className="text-sm font-normal text-blue-400">
+                {selectedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+              </span>
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <Calendar 
@@ -268,28 +273,43 @@ const TaskCalendar = ({ projectId }: TaskCalendarProps) => {
               modifiersStyles={{
                 hasTask: { backgroundColor: '#1e40af', color: 'white' }
               }}
-              className="border border-gray-700 mx-[81px] rounded-lg"
+              className="border border-gray-700 rounded-lg mx-auto"
             />
           </CardContent>
         </Card>
 
-        {/* Selected Date Tasks */}
-        <Card className="bg-gray-900 border-gray-800">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
-              <CalendarIcon className="h-5 w-5" />
-              {selectedDate.toLocaleDateString()}
+        {/* Selected Date Tasks - Takes more space on desktop */}
+        <Card className="bg-gray-900 border-gray-800 lg:col-span-2">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-white flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CalendarIcon className="h-5 w-5" />
+                <span>{selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</span>
+              </div>
+              <Badge className="bg-blue-600">
+                {selectedDateTasks.length} {selectedDateTasks.length === 1 ? 'task' : 'tasks'}
+              </Badge>
             </CardTitle>
           </CardHeader>
           <CardContent>
             {selectedDateTasks.length === 0 ? (
-              <p className="text-gray-400 text-center py-8">
-                No tasks scheduled for this date.
-              </p>
+              <div className="text-gray-400 text-center py-12 flex flex-col items-center">
+                <CalendarIcon className="h-12 w-12 mb-3 text-gray-600" />
+                <p>No tasks scheduled for this date.</p>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setShowCreateDialog(true)}
+                  className="mt-4 border-gray-700 text-gray-300"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Task
+                </Button>
+              </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
                 {selectedDateTasks.map((task) => (
-                  <div key={task.id} className="bg-gray-800 rounded-lg p-3">
+                  <div key={task.id} className="bg-gray-800 rounded-lg p-4 border-l-4 border-l-blue-600 hover:bg-gray-750 transition-colors">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2 flex-1">
                         <Checkbox
@@ -327,7 +347,7 @@ const TaskCalendar = ({ projectId }: TaskCalendarProps) => {
                     </div>
                     
                     {task.description && (
-                      <p className={`text-sm mb-2 ${
+                      <p className={`text-sm mb-3 pl-6 ${
                         task.completed ? 'text-gray-500' : 'text-gray-300'
                       }`}>
                         {task.description}
@@ -335,7 +355,7 @@ const TaskCalendar = ({ projectId }: TaskCalendarProps) => {
                     )}
                     
                     {(task.start_time || task.end_time) && (
-                      <div className="flex items-center gap-2 text-gray-400 text-sm">
+                      <div className="flex items-center gap-2 text-gray-400 text-sm pl-6">
                         <Clock className="h-3 w-3" />
                         {task.start_time && task.end_time ? (
                           <span>{task.start_time} - {task.end_time}</span>
@@ -348,7 +368,7 @@ const TaskCalendar = ({ projectId }: TaskCalendarProps) => {
                     )}
 
                     {task.completed && task.completed_at && (
-                      <div className="text-xs text-green-400 mt-2">
+                      <div className="text-xs text-green-400 mt-2 pl-6">
                         ✓ Completed {new Date(task.completed_at).toLocaleDateString()}
                       </div>
                     )}
@@ -359,6 +379,33 @@ const TaskCalendar = ({ projectId }: TaskCalendarProps) => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Add this CSS for custom scrollbar */}
+      <style jsx global>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: #1f2937;
+          border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #374151;
+          border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #4b5563;
+        }
+        @media (max-width: 768px) {
+          .rdp {
+            --rdp-cell-size: 36px;
+            margin: 0 auto;
+          }
+          .rdp-caption {
+            padding: 0 8px;
+          }
+        }
+      `}</style>
 
       {/* Create/Edit Task Dialog */}
       <Dialog open={showCreateDialog || !!editingTask} onOpenChange={closeDialog}>

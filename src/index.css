@@ -99,3 +99,31 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Add these styles to your existing CSS */
+
+@media (max-width: 768px) {
+  /* Calendar mobile improvements */
+  .rdp {
+    --rdp-cell-size: 36px !important;
+    margin: 0 auto !important;
+  }
+  
+  .rdp-caption {
+    padding: 0 8px !important;
+  }
+  
+  .rdp-month {
+    width: 100% !important;
+  }
+  
+  /* Task card mobile improvements */
+  .task-card-mobile {
+    flex-direction: column !important;
+  }
+  
+  .task-card-mobile .task-actions {
+    margin-top: 8px !important;
+    justify-content: flex-start !important;
+  }
+}

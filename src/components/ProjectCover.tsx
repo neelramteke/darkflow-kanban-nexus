@@ -3,7 +3,7 @@ import React from 'react';
 import { Tables } from '@/integrations/supabase/types';
 
 interface ProjectWithCover extends Tables<'projects'> {
-  cover_image?: string;
+  // Removed cover_image field as it's no longer needed
 }
 
 interface ProjectCoverProps {
@@ -12,34 +12,29 @@ interface ProjectCoverProps {
 }
 
 const ProjectCover = ({ project, children }: ProjectCoverProps) => {
-  if (!project.cover_image) {
-    return (
-      <div className="bg-gradient-to-r from-gray-900 to-gray-800 py-12">
-        <div className="container mx-auto px-6">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-white mb-4">{project.name}</h1>
-            {project.description && (
-              <p className="text-xl text-gray-300 max-w-2xl mx-auto">{project.description}</p>
-            )}
-          </div>
-          {children}
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="relative">
       <div 
-        className="h-64 bg-cover bg-center relative"
-        style={{ backgroundImage: `url(${project.cover_image})` }}
+        className="h-64 relative overflow-hidden"
+        style={{
+          background: 'linear-gradient(45deg, #0a192f, #112240, #1a365d, #0d2b57)',
+          backgroundSize: '400% 400%',
+          animation: 'gradient 8s ease infinite' // Changed from 15s to 8s for faster animation
+        }}
       >
-        <div className="absolute inset-0 bg-black bg-opacity-50" />
-        <div className="absolute bottom-0 left-0 right-0 p-6">
-          <div className="container mx-auto">
-            <h1 className="text-4xl font-bold text-white mb-2">{project.name}</h1>
+        <style jsx>{`
+          @keyframes gradient {
+            0% { background-position: 0% 50% }
+            50% { background-position: 100% 50% }
+            100% { background-position: 0% 50% }
+          }
+        `}</style>
+        <div className="absolute inset-0 bg-black bg-opacity-30" />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="container mx-auto px-6 text-center">
+            <h1 className="text-4xl font-bold text-white mb-4">{project.name}</h1>
             {project.description && (
-              <p className="text-xl text-gray-200 max-w-2xl">{project.description}</p>
+              <p className="text-xl text-gray-200 max-w-2xl mx-auto">{project.description}</p>
             )}
           </div>
         </div>

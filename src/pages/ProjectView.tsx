@@ -20,7 +20,7 @@ interface ProjectViewProps {
 }
 
 const ProjectView = ({ project, onBack, onUpdate }: ProjectViewProps) => {
-  const [showUpload, setShowUpload] = useState(false);
+  // Remove the showUpload state since we don't need it anymore
   const [selectedTab, setSelectedTab] = useState('dashboard');
   const isMobile = useIsMobile();
 
@@ -63,27 +63,10 @@ const ProjectView = ({ project, onBack, onUpdate }: ProjectViewProps) => {
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Projects
               </Button>
-              <Button
-                variant="outline"
-                onClick={() => setShowUpload(!showUpload)}
-                className="text-white border-gray-600"
-              >
-                <Upload className="h-4 w-4 mr-2" />
-                {project.cover_image ? 'Change Cover' : 'Add Cover'}
-              </Button>
+              {/* Remove the Upload Cover button */}
             </div>
             
-            {showUpload && (
-              <div className="mt-4 p-4 bg-gray-900 rounded-lg">
-                <CoverImageUpload 
-                  project={project} 
-                  onUpdate={() => {
-                    onUpdate?.();
-                    setShowUpload(false);
-                  }} 
-                />
-              </div>
-            )}
+            {/* Remove the CoverImageUpload component */}
           </div>
         </div>
       </ProjectCover>
