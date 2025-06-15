@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, Eye, EyeOff } from 'lucide-react';
 import { BeamsBackground } from '@/components/ui/beams-background';
 import Logo from '@/components/Logo';
+import { cleanupAuthState } from '@/hooks/cleanupAuthState';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -28,9 +28,16 @@ const Auth = () => {
     setLoading(true);
 
     try {
+      // Clean up possible stale sessions!
+      cleanupAuthState();
+      try {
+        await supabase.auth.signOut({ scope: 'global' });
+      } catch (_) {
+        // Ignore, cleaning up anyway
+      }
+
       if (isLogin) {
         const response = await signIn(email, password);
-        // Supabase errors differ in their shape, but common error codes/messages for not existing are 'Invalid login credentials'
         if (response.error) {
           const msg = response.error.message?.toLowerCase() ?? '';
           if (
@@ -59,6 +66,9 @@ const Auth = () => {
           title: "Welcome back!",
           description: "You have been successfully signed in.",
         });
+        // Force a full page reload to re-initialize the app session
+        window.location.href = "/";
+        return;
       } else {
         if (password !== confirmPassword) {
           toast({
@@ -81,6 +91,8 @@ const Auth = () => {
           title: "Account created!",
           description: "Please check your email to verify your account.",
         });
+        window.location.href = "/";
+        return;
       }
     } catch (error: any) {
       toast({
@@ -233,4 +245,3 @@ const Auth = () => {
 };
 
 export default Auth;
-
