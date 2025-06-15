@@ -4,10 +4,9 @@ import ProjectLinks from '@/components/ProjectLinks';
 import ProjectDashboard from '@/components/ProjectDashboard';
 import TaskCalendar from '@/components/TaskCalendar';
 import ProjectCover from '@/components/ProjectCover';
-import CoverImageUpload from '@/components/CoverImageUpload';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, Kanban, FileText, Link2, Calendar, LayoutDashboard, Upload, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Kanban, FileText, Link2, Calendar, LayoutDashboard, ChevronDown } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tables } from '@/integrations/supabase/types';
 import { useState } from 'react';
@@ -20,7 +19,6 @@ interface ProjectViewProps {
 }
 
 const ProjectView = ({ project, onBack, onUpdate }: ProjectViewProps) => {
-  // Remove the showUpload state since we don't need it anymore
   const [selectedTab, setSelectedTab] = useState('dashboard');
   const isMobile = useIsMobile();
 
@@ -63,10 +61,8 @@ const ProjectView = ({ project, onBack, onUpdate }: ProjectViewProps) => {
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Projects
               </Button>
-              {/* Remove the Upload Cover button */}
             </div>
-            
-            {/* Remove the CoverImageUpload component */}
+            {/* Cover photo upload button/component removed */}
           </div>
         </div>
       </ProjectCover>

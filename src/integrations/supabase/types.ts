@@ -87,8 +87,6 @@ export type Database = {
           assigned_to: string | null
           column_id: string
           comments: Json | null
-          completed: boolean | null
-          completed_at: string | null
           created_at: string
           description: string | null
           due_date: string | null
@@ -103,8 +101,6 @@ export type Database = {
           assigned_to?: string | null
           column_id: string
           comments?: Json | null
-          completed?: boolean | null
-          completed_at?: string | null
           created_at?: string
           description?: string | null
           due_date?: string | null
@@ -119,8 +115,6 @@ export type Database = {
           assigned_to?: string | null
           column_id?: string
           comments?: Json | null
-          completed?: boolean | null
-          completed_at?: string | null
           created_at?: string
           description?: string | null
           due_date?: string | null
@@ -246,8 +240,6 @@ export type Database = {
       }
       project_tasks: {
         Row: {
-          completed: boolean | null
-          completed_at: string | null
           created_at: string
           description: string | null
           end_time: string | null
@@ -260,8 +252,6 @@ export type Database = {
           updated_at: string
         }
         Insert: {
-          completed?: boolean | null
-          completed_at?: string | null
           created_at?: string
           description?: string | null
           end_time?: string | null
@@ -274,8 +264,6 @@ export type Database = {
           updated_at?: string
         }
         Update: {
-          completed?: boolean | null
-          completed_at?: string | null
           created_at?: string
           description?: string | null
           end_time?: string | null
@@ -299,7 +287,6 @@ export type Database = {
       }
       projects: {
         Row: {
-          cover_image: string | null
           created_at: string
           description: string | null
           id: string
@@ -309,7 +296,6 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          cover_image?: string | null
           created_at?: string
           description?: string | null
           id?: string
@@ -319,7 +305,6 @@ export type Database = {
           user_id: string
         }
         Update: {
-          cover_image?: string | null
           created_at?: string
           description?: string | null
           id?: string
