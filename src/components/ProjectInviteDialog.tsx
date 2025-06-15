@@ -4,7 +4,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 
 interface ProjectInviteDialogProps {
@@ -13,7 +12,7 @@ interface ProjectInviteDialogProps {
   project: Tables<"projects">;
 }
 
-const ProjectInviteDialog = ({ open, onOpenChange, project }: ProjectInviteDialogProps) => {
+const ProjectInviteDialog = ({ open, onOpenChange }: ProjectInviteDialogProps) => {
   const [email, setEmail] = useState("");
   const [sending, setSending] = useState(false);
   const { toast } = useToast();
@@ -27,26 +26,12 @@ const ProjectInviteDialog = ({ open, onOpenChange, project }: ProjectInviteDialo
       return;
     }
 
-    // Try inserting invite row
-    const { error } = await supabase
-      .from("project_invites")
-      .insert({
-        project_id: project.id,
-        email: email.trim(),
-        // invited_by will be handled by RLS/trigger, but can pass `user.id` if available
-      });
-
-    if (error) {
-      toast({
-        title: "Failed to send invite",
-        description: error.message || "Could not send invite.",
-        variant: "destructive",
-      });
-    } else {
-      toast({ title: "Invite sent!", description: `Invitation sent to ${email}` });
-      setEmail("");
-      onOpenChange(false);
-    }
+    // Inform that invites by email are not currently available
+    toast({
+      title: "Feature not available",
+      description: "Inviting by email is not available yet. Please add the contributor by user ID.",
+      variant: "destructive",
+    });
     setSending(false);
   };
 
@@ -65,12 +50,12 @@ const ProjectInviteDialog = ({ open, onOpenChange, project }: ProjectInviteDialo
             className="mb-4"
           />
           <small className="text-gray-400">
-            They'll receive an invite and, after signing up, will see this project in their dashboard.
+            Email invites not available yet. Please contact the user directly.
           </small>
         </div>
         <DialogFooter>
           <Button 
-            onClick={handleInvite} 
+            onClick={handleInvite}
             disabled={sending || !email}
             className="bg-blue-600 hover:bg-blue-700"
           >
