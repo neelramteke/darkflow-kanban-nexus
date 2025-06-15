@@ -60,7 +60,6 @@ const KanbanCard = ({ card, index, onUpdate }: KanbanCardProps) => {
       <Draggable draggableId={card.id} index={index}>
         {(provided, snapshot) => (
           <div className="relative">
-            {/* Add the glowing effect as background/visual layer */}
             <GlowingEffect
               spread={40}
               glow={true}
@@ -78,16 +77,15 @@ const KanbanCard = ({ card, index, onUpdate }: KanbanCardProps) => {
                 snapshot.isDragging 
                   ? 'bg-gray-700 shadow-lg scale-105' 
                   : 'bg-gray-800 hover:bg-gray-700'
-              } border-gray-700 ${card.completed ? 'opacity-75' : ''}`}
+              } border-gray-700 ${card.completed ? 'opacity-75' : ''} rounded-none`}
               onClick={(e) => {
-                // Don't open details if clicking on checkbox
                 if ((e.target as HTMLElement).closest('[data-checkbox]')) {
                   return;
                 }
                 setShowDetails(true);
               }}
             >
-              <CardContent className="p-3">
+              <CardContent className="p-3 rounded-none">
                 <div className="space-y-2">
                   <div className="flex items-start justify-between">
                     <div className="flex items-start gap-2 flex-1">
