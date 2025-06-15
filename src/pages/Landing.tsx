@@ -73,21 +73,18 @@ const Landing = ({ onGetStarted }: LandingProps) => {
             particleColor="#FFFFFF"
             speed={1}
           />
-          {/* subtle radial gradient for edge fade */}
           <div className="absolute inset-0 w-full h-full bg-black [mask-image:radial-gradient(600px_300px_at_top,transparent_20%,white)]"></div>
         </div>
         <div className="container mx-auto text-center relative z-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="mb-8 flex flex-col items-center"
-          >
+          <div className="mb-8 flex flex-col items-center">
             <Logo className="h-20 mb-4" />
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 bg-clip-text text-transparent">
-              Agile<span className="text-white">/</span>Anchor
-            </h1>
-            <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+            <div className="relative w-full flex justify-center">
+              <div className="absolute left-1/2 -translate-x-1/2 top-0 z-[-1] w-52 h-8">
+                {/* Dim moving glow: a soft animated gradient using Tailwind and animation */}
+                <div className="w-full h-full rounded-full blur-2xl opacity-70 animate-glow bg-gradient-to-r from-purple-500 via-blue-500 to-pink-500" />
+              </div>
+            </div>
+            <p className="text-xl md:text-2xl text-gray-300 mt-8 mb-8 max-w-3xl mx-auto">
               The ultimate project management platform that keeps your team anchored to success. 
               Organize, collaborate, and deliver with precision.
             </p>
@@ -96,8 +93,7 @@ const Landing = ({ onGetStarted }: LandingProps) => {
               <span className="text-lg font-semibold text-yellow-500">100% Free Forever</span>
               <Star className="h-5 w-5 text-yellow-500 fill-current" />
             </div>
-          </motion.div>
-
+          </div>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
