@@ -9,6 +9,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Eye, EyeOff } from 'lucide-react';
 import { BeamsBackground } from '@/components/ui/beams-background';
+import Logo from '@/components/Logo';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -28,7 +29,32 @@ const Auth = () => {
 
     try {
       if (isLogin) {
-        await signIn(email, password);
+        const response = await signIn(email, password);
+        // Supabase errors differ in their shape, but common error codes/messages for not existing are 'Invalid login credentials'
+        if (response.error) {
+          const msg = response.error.message?.toLowerCase() ?? '';
+          if (
+            msg.includes('user not found') ||
+            msg.includes('invalid login credentials') ||
+            msg.includes('invalid credentials') ||
+            msg.includes('credentials are invalid') ||
+            msg.includes('no user found') ||
+            response.error.code === 'auth/user-not-found'
+          ) {
+            toast({
+              title: "User not found",
+              description: "No account exists for this email. Please sign up first before signing in.",
+              variant: "destructive",
+            });
+          } else {
+            toast({
+              title: "Sign in failed",
+              description: response.error.message,
+              variant: "destructive",
+            });
+          }
+          return;
+        }
         toast({
           title: "Welcome back!",
           description: "You have been successfully signed in.",
@@ -42,7 +68,15 @@ const Auth = () => {
           });
           return;
         }
-        await signUp(email, password);
+        const response = await signUp(email, password);
+        if (response.error) {
+          toast({
+            title: "Sign up failed",
+            description: response.error.message,
+            variant: "destructive",
+          });
+          return;
+        }
         toast({
           title: "Account created!",
           description: "Please check your email to verify your account.",
@@ -63,12 +97,8 @@ const Auth = () => {
     <BeamsBackground className="flex items-center justify-center min-h-screen p-4">
       <div className="w-full max-w-md mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">
-            ⚓AgileAnchor
-          </h1>
-          <p className="text-gray-400 text-sm sm:text-base">
-            Your project management companion
-          </p>
+          <Logo className="mx-auto mb-3 h-16" />
+          {/* Removed the AgileAnchor text and subtitle */}
         </div>
 
         <Card className="bg-black/50 border-gray-800 backdrop-blur-sm">
@@ -203,3 +233,4 @@ const Auth = () => {
 };
 
 export default Auth;
+
