@@ -5,6 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Settings, ArrowLeft, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import Logo from "./Logo"; // Import logo
 
 const Navbar = () => {
   const { user } = useAuth();
@@ -26,9 +27,9 @@ const Navbar = () => {
           <div className="flex items-center space-x-4 sm:space-x-8">
             <button 
               onClick={() => navigate('/')}
-              className="text-lg sm:text-xl font-bold text-white hover:text-gray-300 transition-colors"
+              className="flex items-center h-10"
             >
-              ⚓AgileAnchor
+              <Logo className="h-8 w-auto" />
             </button>
             {!isSettingsPage && !isMobile && (
               <div className="flex space-x-4">
@@ -106,3 +107,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
