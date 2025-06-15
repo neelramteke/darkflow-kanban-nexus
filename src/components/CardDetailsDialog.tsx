@@ -29,7 +29,7 @@ interface Comment {
 type CardPriority = 'low' | 'medium' | 'high' | 'urgent';
 
 interface CardDetailsDialogProps {
-  card: Tables<'cards'> | null;
+  card: CardWithCompletion | null;
   isOpen: boolean;
   onClose: () => void;
   onUpdate: () => void;

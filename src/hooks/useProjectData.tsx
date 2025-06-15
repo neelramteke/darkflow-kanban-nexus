@@ -2,10 +2,11 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Tables } from '@/integrations/supabase/types';
+import { CardWithCompletion, TaskWithCompletion } from '@/types/project-extensions';
 
 interface ProjectData {
-  tasks: Tables<'project_tasks'>[];
-  cards: Tables<'cards'>[];
+  tasks: TaskWithCompletion[];
+  cards: CardWithCompletion[];
   notes: Tables<'project_notes'>[];
   links: Tables<'project_links'>[];
   columns: Tables<'board_columns'>[];
@@ -32,8 +33,8 @@ export const useProjectData = (projectId: string) => {
       ]);
 
       setData({
-        tasks: tasksRes.data || [],
-        cards: cardsRes.data || [],
+        tasks: tasksRes.data as TaskWithCompletion[] || [],
+        cards: cardsRes.data as CardWithCompletion[] || [],
         notes: notesRes.data || [],
         links: linksRes.data || [],
         columns: columnsRes.data || []

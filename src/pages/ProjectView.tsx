@@ -1,3 +1,4 @@
+
 import KanbanBoard from '@/components/KanbanBoard';
 import ProjectNotes from '@/components/ProjectNotes';
 import ProjectLinks from '@/components/ProjectLinks';
@@ -6,14 +7,14 @@ import TaskCalendar from '@/components/TaskCalendar';
 import ProjectCover from '@/components/ProjectCover';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, Kanban, FileText, Link2, Calendar, LayoutDashboard, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Kanban, FileText, Link2, Calendar, LayoutDashboard } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Tables } from '@/integrations/supabase/types';
+import { ProjectWithCover } from '@/types/project-extensions';
 import { useState } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ProjectViewProps {
-  project: Tables<'projects'>;
+  project: ProjectWithCover;
   onBack: () => void;
   onUpdate?: () => void;
 }
@@ -62,7 +63,6 @@ const ProjectView = ({ project, onBack, onUpdate }: ProjectViewProps) => {
                 Back to Projects
               </Button>
             </div>
-            {/* Cover photo upload button/component removed */}
           </div>
         </div>
       </ProjectCover>

@@ -1,16 +1,17 @@
+
 import { useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Tables } from '@/integrations/supabase/types';
 import { User, Calendar, MessageCircle, Tag } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import CardDetailsDialog from './CardDetailsDialog';
+import { CardWithCompletion } from '@/types/project-extensions';
 
 interface KanbanCardProps {
-  card: Tables<'cards'>;
+  card: CardWithCompletion;
   index: number;
   onUpdate: () => void;
 }

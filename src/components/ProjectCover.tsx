@@ -1,9 +1,7 @@
 
 import React from 'react';
-import { Tables } from '@/integrations/supabase/types';
+import { ProjectWithCover } from '@/types/project-extensions';
 import { SparklesCore } from '@/components/ui/sparkles';
-
-interface ProjectWithCover extends Tables<'projects'> {}
 
 interface ProjectCoverProps {
   project: ProjectWithCover;

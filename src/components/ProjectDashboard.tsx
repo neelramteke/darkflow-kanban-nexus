@@ -3,10 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tables } from '@/integrations/supabase/types';
 import { ClipboardList, CheckSquare, Clock, AlertCircle, FileText, Link2, Calendar } from 'lucide-react';
 import { useProjectData } from '@/hooks/useProjectData';
+import { ProjectWithCover, CardWithCompletion, TaskWithCompletion } from '@/types/project-extensions';
 
 interface ProjectDashboardProps {
   projectId: string;
-  project: Tables<'projects'>;
+  project: ProjectWithCover;
 }
 
 const ProjectDashboard = ({ projectId, project }: ProjectDashboardProps) => {
@@ -21,9 +22,13 @@ const ProjectDashboard = ({ projectId, project }: ProjectDashboardProps) => {
     );
   }
 
+  // Use local-extended types
+  const tasks: TaskWithCompletion[] = data.tasks as any;
+  const cards: CardWithCompletion[] = data.cards as any;
+
   // Calculate task statistics
-  const completedTasks = data.tasks.filter(task => task.completed).length;
-  const upcomingTasks = data.tasks.filter(task => {
+  const completedTasks = tasks.filter(task => task.completed).length;
+  const upcomingTasks = tasks.filter(task => {
     if (!task.task_date) return false;
     const taskDate = new Date(task.task_date);
     const now = new Date();
@@ -32,7 +37,7 @@ const ProjectDashboard = ({ projectId, project }: ProjectDashboardProps) => {
     return taskDate >= now && taskDate <= weekFromNow && !task.completed;
   }).length;
 
-  const overdueTasks = data.tasks.filter(task => {
+  const overdueTasks = tasks.filter(task => {
     if (!task.task_date) return false;
     const taskDate = new Date(task.task_date);
     const now = new Date();
@@ -40,7 +45,7 @@ const ProjectDashboard = ({ projectId, project }: ProjectDashboardProps) => {
   }).length;
 
   // Calculate card statistics
-  const completedCards = data.cards.filter(card => card.completed).length;
+  const completedCards = cards.filter(card => card.completed).length;
 
   return (
     <div className="space-y-6">
