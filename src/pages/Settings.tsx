@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { User, Save, LogOut } from 'lucide-react';
+import { User, Save, LogOut, Key } from 'lucide-react';
 
 interface Profile {
   id: string;
@@ -24,12 +24,19 @@ const Settings = () => {
   const [bio, setBio] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [passwordTabOpen, setPasswordTabOpen] = useState(false);
+
+  // Password change state
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [passwordLoading, setPasswordLoading] = useState(false);
+
   const { user, signOut } = useAuth();
   const { toast } = useToast();
 
   const loadProfile = async () => {
     if (!user) return;
-
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -60,6 +67,7 @@ const Settings = () => {
 
   useEffect(() => {
     loadProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const handleSaveProfile = async () => {
@@ -96,6 +104,77 @@ const Settings = () => {
       setSaving(false);
     }
   };
+
+  // PASSWORD CHANGE FUNCTIONALITY --------------------
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!user) return;
+
+    if (!currentPassword || !newPassword || !confirmNewPassword) {
+      toast({
+        title: "Missing fields",
+        description: "Please fill all fields.",
+        variant: "destructive"
+      });
+      return;
+    }
+    if (newPassword.length < 6) {
+      toast({
+        title: "Password too short",
+        description: "Password must be at least 6 characters.",
+        variant: "destructive"
+      });
+      return;
+    }
+    if (newPassword !== confirmNewPassword) {
+      toast({
+        title: "Passwords do not match",
+        description: "Check confirmation.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setPasswordLoading(true);
+    // Supabase requires the user to re-authenticate before changing password.
+    const { error: loginErr } = await supabase.auth.signInWithPassword({
+      email: user.email!,
+      password: currentPassword,
+    });
+    if (loginErr) {
+      toast({
+        title: "Current password is incorrect",
+        description: loginErr.message,
+        variant: "destructive",
+      });
+      setPasswordLoading(false);
+      return;
+    }
+    // Change password
+    const { error: pwError } = await supabase.auth.updateUser({
+      password: newPassword
+    });
+
+    if (pwError) {
+      toast({
+        title: "Password change failed",
+        description: pwError.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Password updated",
+        description: "Your password was successfully changed.",
+      });
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmNewPassword('');
+      setPasswordTabOpen(false);
+    }
+    setPasswordLoading(false);
+  };
+  // --------------------------------------------------
 
   const handleSignOut = async () => {
     const { error } = await signOut();
@@ -185,6 +264,63 @@ const Settings = () => {
                 {saving ? 'Saving...' : 'Save Profile'}
               </Button>
             </CardContent>
+          </Card>
+
+          {/* Change Password Section */}
+          <Card className="bg-gray-900 border-gray-800 mb-6">
+            <CardHeader
+              className="cursor-pointer"
+              onClick={() => setPasswordTabOpen((v) => !v)}
+            >
+              <CardTitle className="text-white flex items-center gap-2 select-none">
+                <Key className="h-5 w-5" />
+                Change Password
+                <span className="ml-auto text-xs text-gray-400">{passwordTabOpen ? "▲" : "▼"}</span>
+              </CardTitle>
+            </CardHeader>
+            {passwordTabOpen && (
+              <CardContent>
+                <form className="space-y-4" onSubmit={handleChangePassword}>
+                  <div>
+                    <label className="text-sm font-medium text-gray-300">Current Password</label>
+                    <Input
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      type="password"
+                      className="bg-gray-800 border-gray-700 text-white"
+                      placeholder="Current password"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-300">New Password</label>
+                    <Input
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      type="password"
+                      className="bg-gray-800 border-gray-700 text-white"
+                      placeholder="New password"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-300">Confirm New Password</label>
+                    <Input
+                      value={confirmNewPassword}
+                      onChange={(e) => setConfirmNewPassword(e.target.value)}
+                      type="password"
+                      className="bg-gray-800 border-gray-700 text-white"
+                      placeholder="Confirm new password"
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    disabled={passwordLoading}
+                    className="bg-blue-600 hover:bg-blue-700"
+                  >
+                    {passwordLoading ? "Changing..." : "Change Password"}
+                  </Button>
+                </form>
+              </CardContent>
+            )}
           </Card>
 
           {/* Account Actions */}

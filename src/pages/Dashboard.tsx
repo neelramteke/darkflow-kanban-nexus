@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,6 +24,27 @@ const Dashboard = ({ onSelectProject }: DashboardProps) => {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const { toast } = useToast();
+
+  // New: fetch user profile for greeting
+  const [userFirstName, setUserFirstName] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Fetch profile first name if logged in
+    const fetchName = async () => {
+      if (!user) return;
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('first_name')
+        .eq('id', user.id)
+        .single();
+      if (!error && data && data.first_name) {
+        setUserFirstName(data.first_name);
+      } else {
+        setUserFirstName(null);
+      }
+    };
+    fetchName();
+  }, [user]);
 
   const loadProjects = async () => {
     if (!user) return;
@@ -85,9 +105,12 @@ const Dashboard = ({ onSelectProject }: DashboardProps) => {
   return (
     <div className="min-h-screen bg-black">
       <div className="container mx-auto px-6 py-8">
-        <div className="flex items-center justify-between mb-8">
+        {/* Greeting Section */}
+        <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Projects</h1>
+            <h1 className="text-3xl font-bold text-white mb-2">
+              {userFirstName ? `Welcome, ${userFirstName}!` : "Welcome!"}
+            </h1>
             <p className="text-gray-400">Manage your project portfolio</p>
           </div>
           <Button 
