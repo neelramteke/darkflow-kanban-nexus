@@ -1,3 +1,4 @@
+
 import { motion } from 'motion/react';
 import { Button } from '@/components/ui/button';
 import { CursorGlow } from '@/components/CursorGlow';
@@ -17,6 +18,7 @@ import {
 import Logo from '@/components/Logo';
 import LandingNavbar from '@/components/LandingNavbar';
 import { SparklesCore } from '@/components/ui/sparkles';
+import { TextScramble } from '@/components/ui/text-scramble';
 
 interface LandingProps {
   onGetStarted: () => void;
@@ -77,6 +79,13 @@ const Landing = ({ onGetStarted }: LandingProps) => {
         </div>
         <div className="container mx-auto text-center relative z-20">
           <div className="mb-8 flex flex-col items-center">
+            {/* Scrambled Bold Text Above Logo */}
+            <TextScramble
+              className="font-bold text-2xl md:text-3xl mb-2 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent"
+              as="div"
+            >
+              Manage your projects in a simple and practical way with
+            </TextScramble>
             <Logo className="h-20 mb-4" />
             <div className="relative w-full flex justify-center">
               <div className="absolute left-1/2 -translate-x-1/2 top-0 z-[-1] w-52 h-8">
@@ -241,3 +250,4 @@ const Landing = ({ onGetStarted }: LandingProps) => {
 };
 
 export default Landing;
+
