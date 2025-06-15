@@ -11,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { Tables } from '@/integrations/supabase/types';
 import { X, Plus, User, Calendar } from 'lucide-react';
+import { CardWithCompletion } from '@/types/project-extensions';
 
 interface Profile {
   id: string;

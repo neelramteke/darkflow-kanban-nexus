@@ -1,4 +1,3 @@
-
 'use client';
 import { cn } from '@/lib/utils';
 import { motion, Transition } from 'motion/react';
@@ -112,6 +111,10 @@ export function GlowEffect({
     },
   };
 
+  const staticGradient = {
+    background: `linear-gradient(to right, ${colors.join(', ')})`,
+  };
+
   const getBlurClass = (blur: GlowEffectProps['blur']) => {
     if (typeof blur === 'number') {
       return `blur-[${blur}px]`;
@@ -132,15 +135,13 @@ export function GlowEffect({
 
   return (
     <motion.div
-      style={
-        {
-          ...style,
-          '--scale': scale,
-          willChange: 'transform',
-          backfaceVisibility: 'hidden',
-        } as React.CSSProperties
-      }
-      animate={animations[mode]}
+      style={{
+        ...style,
+        '--scale': scale,
+        willChange: 'transform',
+        backfaceVisibility: 'hidden',
+      } as React.CSSProperties}
+      animate={staticGradient}
       className={cn(
         'pointer-events-none absolute inset-0 h-full w-full',
         'scale-[var(--scale)] transform-gpu',

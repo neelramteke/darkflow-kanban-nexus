@@ -11,12 +11,14 @@ import { Tables } from '@/integrations/supabase/types';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Plus, Clock, Calendar as CalendarIcon, Edit, Trash2 } from 'lucide-react';
+import { TaskWithCompletion } from '@/types/project-extensions';
 
 interface TaskCalendarProps {
   projectId: string;
 }
 
-interface Task extends Tables<'project_tasks'> {}
+// Use TaskWithCompletion for task type
+type Task = TaskWithCompletion;
 
 const TaskCalendar = ({ projectId }: TaskCalendarProps) => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -381,31 +383,33 @@ const TaskCalendar = ({ projectId }: TaskCalendarProps) => {
       </div>
 
       {/* Add this CSS for custom scrollbar */}
-      <style jsx global>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: #1f2937;
-          border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #374151;
-          border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #4b5563;
-        }
-        @media (max-width: 768px) {
-          .rdp {
-            --rdp-cell-size: 36px;
-            margin: 0 auto;
+      <style>
+        {`
+          .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
           }
-          .rdp-caption {
-            padding: 0 8px;
+          .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1f2937;
+            border-radius: 4px;
           }
-        }
-      `}</style>
+          .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #4b5563;
+          }
+          @media (max-width: 768px) {
+            .rdp {
+              --rdp-cell-size: 36px;
+              margin: 0 auto;
+            }
+            .rdp-caption {
+              padding: 0 8px;
+            }
+          }
+        `}
+      </style>
 
       {/* Create/Edit Task Dialog */}
       <Dialog open={showCreateDialog || !!editingTask} onOpenChange={closeDialog}>
