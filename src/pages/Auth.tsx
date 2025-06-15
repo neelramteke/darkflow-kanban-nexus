@@ -10,6 +10,7 @@ import { Loader2, Eye, EyeOff } from 'lucide-react';
 import { BeamsBackground } from '@/components/ui/beams-background';
 import Logo from '@/components/Logo';
 import { cleanupAuthState } from '@/hooks/cleanupAuthState';
+import { supabase } from '@/integrations/supabase/client';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
