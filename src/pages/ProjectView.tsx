@@ -38,7 +38,18 @@ const ProjectView = ({ project, onBack, onUpdate }: ProjectViewProps) => {
       case 'board':
         return <KanbanBoard projectId={project.id} />;
       case 'calendar':
-        return <TaskCalendar projectId={project.id} />;
+        // Custom calendar wrapper for better layout
+        return (
+          <section className="max-w-5xl mx-auto w-full">
+            <div className="mb-6 flex items-center gap-3">
+              <Calendar className="w-6 h-6 text-blue-500" />
+              <h2 className="text-2xl lg:text-3xl font-bold text-white tracking-tight">Project Task Calendar</h2>
+            </div>
+            <div className="rounded-2xl shadow-xl bg-gradient-to-br from-gray-900 via-gray-800 to-black px-2 py-1 md:px-10 md:py-8 border border-[#272748]">
+              <TaskCalendar projectId={project.id} />
+            </div>
+          </section>
+        );
       case 'notes':
         return <ProjectNotes projectId={project.id} />;
       case 'links':
@@ -67,7 +78,7 @@ const ProjectView = ({ project, onBack, onUpdate }: ProjectViewProps) => {
         </div>
       </ProjectCover>
 
-      <div className="container mx-auto px-6 py-6">
+      <div className="container mx-auto px-2 sm:px-6 py-6 md:py-10">
         {isMobile ? (
           <div className="w-full">
             <Select value={selectedTab} onValueChange={setSelectedTab}>
@@ -126,7 +137,16 @@ const ProjectView = ({ project, onBack, onUpdate }: ProjectViewProps) => {
             </TabsContent>
 
             <TabsContent value="calendar" className="mt-6">
-              <TaskCalendar projectId={project.id} />
+              {/* Custom calendar wrapper for better layout */}
+              <section className="max-w-5xl mx-auto w-full">
+                <div className="mb-6 flex items-center gap-3">
+                  <Calendar className="w-6 h-6 text-blue-500" />
+                  <h2 className="text-2xl lg:text-3xl font-bold text-white tracking-tight">Project Task Calendar</h2>
+                </div>
+                <div className="rounded-2xl shadow-xl bg-gradient-to-br from-gray-900 via-gray-800 to-black px-2 py-1 md:px-10 md:py-8 border border-[#272748]">
+                  <TaskCalendar projectId={project.id} />
+                </div>
+              </section>
             </TabsContent>
 
             <TabsContent value="notes" className="mt-6">
