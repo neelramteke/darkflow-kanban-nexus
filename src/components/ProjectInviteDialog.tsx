@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Tables } from "@/integrations/supabase/types";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ProjectInviteDialogProps {
   open: boolean;
@@ -12,7 +13,7 @@ interface ProjectInviteDialogProps {
   project: Tables<"projects">;
 }
 
-const ProjectInviteDialog = ({ open, onOpenChange }: ProjectInviteDialogProps) => {
+const ProjectInviteDialog = ({ open, onOpenChange, project }: ProjectInviteDialogProps) => {
   const [email, setEmail] = useState("");
   const [sending, setSending] = useState(false);
   const { toast } = useToast();
@@ -26,12 +27,26 @@ const ProjectInviteDialog = ({ open, onOpenChange }: ProjectInviteDialogProps) =
       return;
     }
 
-    // Inform that invites by email are not currently available
-    toast({
-      title: "Feature not available",
-      description: "Inviting by email is not available yet. Please add the contributor by user ID.",
-      variant: "destructive",
-    });
+    // Insert invite
+    const { error } = await supabase
+      .from("project_invites")
+      .insert({
+        project_id: project.id,
+        email: email.trim(),
+        // invited_by is handled by RLS; can be left blank
+      });
+
+    if (error) {
+      toast({
+        title: "Failed to send invite",
+        description: error.message || "Could not send invite.",
+        variant: "destructive",
+      });
+    } else {
+      toast({ title: "Invite sent!", description: `Invitation sent to ${email}` });
+      setEmail("");
+      onOpenChange(false);
+    }
     setSending(false);
   };
 
@@ -50,7 +65,7 @@ const ProjectInviteDialog = ({ open, onOpenChange }: ProjectInviteDialogProps) =
             className="mb-4"
           />
           <small className="text-gray-400">
-            Email invites not available yet. Please contact the user directly.
+            They'll receive an invite and, after signing up, will see this project in their dashboard.
           </small>
         </div>
         <DialogFooter>
@@ -68,3 +83,4 @@ const ProjectInviteDialog = ({ open, onOpenChange }: ProjectInviteDialogProps) =
 };
 
 export default ProjectInviteDialog;
+

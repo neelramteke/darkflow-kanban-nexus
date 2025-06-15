@@ -220,6 +220,48 @@ export type Database = {
           },
         ]
       }
+      project_invites: {
+        Row: {
+          accepted: boolean
+          created_at: string
+          email: string
+          id: string
+          invited_by: string | null
+          project_id: string
+        }
+        Insert: {
+          accepted?: boolean
+          created_at?: string
+          email: string
+          id?: string
+          invited_by?: string | null
+          project_id: string
+        }
+        Update: {
+          accepted?: boolean
+          created_at?: string
+          email?: string
+          id?: string
+          invited_by?: string | null
+          project_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_invites_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_invites_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       project_links: {
         Row: {
           created_at: string
