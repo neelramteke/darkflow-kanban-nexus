@@ -218,31 +218,27 @@ const TaskCalendar = ({
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Calendar - Takes more space on desktop */}
-        <Card className="bg-gray-900 border-gray-800 lg:col-span-1">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-white flex items-center justify-between">
-              <span>Calendar</span>
-              <span className="text-sm font-normal text-blue-400">
-                {selectedDate.toLocaleDateString('en-US', {
-                month: 'long',
-                year: 'numeric'
-              })}
-              </span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="px-0">
-            <Calendar mode="single" selected={selectedDate} onSelect={date => date && setSelectedDate(date)} modifiers={{
-            hasTask: date => datesWithTasks.has(date.toISOString().split('T')[0])
-          }} modifiersStyles={{
-            hasTask: {
-              backgroundColor: '#1e40af',
-              color: 'white'
-            }
-          }} className="border border-gray-700 rounded-lg mx-[25px] px-0 py-0" />
-          </CardContent>
-        </Card>
-
+        {/* Calendar - Now no box, more padding, more width on desktop */}
+        <div className="lg:col-span-1 flex flex-col items-center justify-start py-6 px-2 md:px-10 bg-transparent">
+          <div className="w-full max-w-[420px] md:max-w-[500px] mx-auto">
+            <Calendar
+              mode="single"
+              selected={selectedDate}
+              onSelect={date => date && setSelectedDate(date)}
+              modifiers={{
+                hasTask: date => datesWithTasks.has(date.toISOString().split('T')[0])
+              }}
+              modifiersStyles={{
+                hasTask: {
+                  backgroundColor: '#1e40af',
+                  color: 'white'
+                }
+              }}
+              className="rounded-2xl mx-auto px-2 py-2 bg-transparent shadow-none border-none"
+            />
+          </div>
+        </div>
+        
         {/* Selected Date Tasks - Takes more space on desktop */}
         <Card className="bg-gray-900 border-gray-800 lg:col-span-2">
           <CardHeader className="pb-2">
