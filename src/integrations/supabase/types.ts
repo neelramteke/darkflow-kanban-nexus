@@ -87,6 +87,8 @@ export type Database = {
           assigned_to: string | null
           column_id: string
           comments: Json | null
+          completed: boolean | null
+          completed_at: string | null
           created_at: string
           description: string | null
           due_date: string | null
@@ -101,6 +103,8 @@ export type Database = {
           assigned_to?: string | null
           column_id: string
           comments?: Json | null
+          completed?: boolean | null
+          completed_at?: string | null
           created_at?: string
           description?: string | null
           due_date?: string | null
@@ -115,6 +119,8 @@ export type Database = {
           assigned_to?: string | null
           column_id?: string
           comments?: Json | null
+          completed?: boolean | null
+          completed_at?: string | null
           created_at?: string
           description?: string | null
           due_date?: string | null
