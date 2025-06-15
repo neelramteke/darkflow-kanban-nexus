@@ -231,7 +231,7 @@ const TaskCalendar = ({
               </span>
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-0">
             <Calendar mode="single" selected={selectedDate} onSelect={date => date && setSelectedDate(date)} modifiers={{
             hasTask: date => datesWithTasks.has(date.toISOString().split('T')[0])
           }} modifiersStyles={{
