@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Tables } from '@/integrations/supabase/types';
 import { Button } from '@/components/ui/button';
@@ -19,6 +18,8 @@ const ProjectNotes = ({ projectId }: ProjectNotesProps) => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [newTitle, setNewTitle] = useState('');
   const [newContent, setNewContent] = useState('');
+  const [editTitle, setEditTitle] = useState('');
+  const [editContent, setEditContent] = useState('');
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -101,6 +102,43 @@ const ProjectNotes = ({ projectId }: ProjectNotesProps) => {
     }
   };
 
+  const handleSaveEdit = async (noteId: string) => {
+    if (!editTitle.trim()) return;
+
+    try {
+      const { error } = await supabase
+        .from('project_notes')
+        .update({
+          title: editTitle.trim(),
+          content: editContent.trim() || null,
+        })
+        .eq('id', noteId);
+
+      if (error) throw error;
+
+      setEditingId(null);
+      setEditTitle('');
+      setEditContent('');
+      loadNotes();
+      toast({
+        title: "Note updated",
+        description: "Your changes were saved.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error updating note",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setEditTitle('');
+    setEditContent('');
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
@@ -172,33 +210,75 @@ const ProjectNotes = ({ projectId }: ProjectNotesProps) => {
           </Card>
         ) : (
           notes.map((note) => (
-            <Card key={note.id} className="bg-gray-900 border-gray-800">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                <CardTitle className="text-white">{note.title}</CardTitle>
-                <div className="flex gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-gray-400 hover:text-white"
-                  >
-                    <Edit3 className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleDelete(note.id)}
-                    className="text-gray-400 hover:text-red-400"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </CardHeader>
-              {note.content && (
-                <CardContent>
-                  <p className="text-gray-300 whitespace-pre-wrap">{note.content}</p>
+            editingId === note.id ? (
+              <Card key={note.id} className="bg-gray-900 border-gray-800">
+                <CardHeader>
+                  <Input
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    className="bg-gray-800 border-gray-700 text-white mb-2"
+                    placeholder="Note title..."
+                  />
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Textarea
+                    value={editContent}
+                    onChange={(e) => setEditContent(e.target.value)}
+                    className="bg-gray-800 border-gray-700 text-white resize-none"
+                    rows={6}
+                    placeholder="Write your note content here..."
+                  />
+                  <div className="flex gap-2">
+                    <Button 
+                      onClick={() => handleSaveEdit(note.id)}
+                      className="bg-blue-600 hover:bg-blue-700"
+                    >
+                      Save Changes
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={handleCancelEdit}
+                      className="border-gray-700 text-gray-300 hover:bg-gray-800"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
                 </CardContent>
-              )}
-            </Card>
+              </Card>
+            ) : (
+              <Card key={note.id} className="bg-gray-900 border-gray-800">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                  <CardTitle className="text-white">{note.title}</CardTitle>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-gray-400 hover:text-white"
+                      onClick={() => {
+                        setEditingId(note.id);
+                        setEditTitle(note.title ?? '');
+                        setEditContent(note.content ?? '');
+                      }}
+                    >
+                      <Edit3 className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDelete(note.id)}
+                      className="text-gray-400 hover:text-red-400"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </CardHeader>
+                {note.content && (
+                  <CardContent>
+                    <p className="text-gray-300 whitespace-pre-wrap">{note.content}</p>
+                  </CardContent>
+                )}
+              </Card>
+            )
           ))
         )}
       </div>
