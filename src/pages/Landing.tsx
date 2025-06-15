@@ -1,4 +1,3 @@
-
 import { motion } from 'motion/react';
 import { Button } from '@/components/ui/button';
 import { CursorGlow } from '@/components/CursorGlow';
@@ -15,6 +14,9 @@ import {
   CheckCircle,
   Star
 } from 'lucide-react';
+import Logo from '@/components/Logo';
+import LandingNavbar from '@/components/LandingNavbar';
+import { SparklesCore } from '@/components/ui/sparkles';
 
 interface LandingProps {
   onGetStarted: () => void;
@@ -55,19 +57,35 @@ const Landing = ({ onGetStarted }: LandingProps) => {
 
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden">
-      <CursorGlow />
-      
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center px-4">
+      {/* Hero Navbar */}
+      <LandingNavbar />
+
+      {/* HERO SECTION WITH SPARKLES EFFECT */}
+      <section className="relative min-h-screen flex items-center justify-center px-4 pt-16">
+        {/* Sparkles background effect */}
+        <div className="absolute inset-0 h-full w-full pointer-events-none z-0">
+          <SparklesCore
+            background="transparent"
+            minSize={0.6}
+            maxSize={1.4}
+            particleDensity={80}
+            className="w-full h-full"
+            particleColor="#FFFFFF"
+            speed={1}
+          />
+          {/* subtle radial gradient for edge fade */}
+          <div className="absolute inset-0 w-full h-full bg-black [mask-image:radial-gradient(600px_300px_at_top,transparent_20%,white)]"></div>
+        </div>
         <div className="container mx-auto text-center relative z-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="mb-8"
+            className="mb-8 flex flex-col items-center"
           >
+            <Logo className="h-20 mb-4" />
             <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 bg-clip-text text-transparent">
-              ⚓AgileAnchor
+              Agile<span className="text-white">/</span>Anchor
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
               The ultimate project management platform that keeps your team anchored to success. 
@@ -215,7 +233,8 @@ const Landing = ({ onGetStarted }: LandingProps) => {
 
       {/* Footer */}
       <footer className="py-8 px-4 border-t border-gray-800 relative z-10">
-        <div className="container mx-auto text-center">
+        <div className="container mx-auto text-center flex flex-col items-center gap-2">
+          <Logo className="h-8 mb-1" />
           <p className="text-gray-400">
             Made with vibe coding by Neel R⚡
           </p>
