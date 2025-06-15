@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
@@ -177,8 +176,18 @@ const ProjectActionsMenu = ({ project, onUpdate }: ProjectActionsMenuProps) => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-gray-800 border-gray-700">
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="archived">Archived</SelectItem>
+                  <SelectItem 
+                    value="active"
+                    className="text-white data-[highlighted]:!bg-blue-600 data-[highlighted]:!text-white"
+                  >
+                    Active
+                  </SelectItem>
+                  <SelectItem 
+                    value="archived"
+                    className="text-white data-[highlighted]:!bg-blue-600 data-[highlighted]:!text-white"
+                  >
+                    Archived
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
